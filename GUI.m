@@ -230,7 +230,6 @@ function classify_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get the user input from GUI
-% Get the user input from GUI
 rate = str2double(get(handles.rate, 'string'));
 review = str2double(get(handles.review, 'string'));
 spf = str2double(get(handles.spf, 'string'));
@@ -261,24 +260,15 @@ groupTable = readtable('dataSunscreen.xlsx', opts);
 group = table2array(groupTable);
 
 % Load the complete dataset to get brand names and links
-opts.SelectedVariableNames = [2:9];  % Columns for brand and link
+opts.SelectedVariableNames = [2];  % Columns for brand and link
 fullData = readtable('dataSunscreen.xlsx', opts);
 
 % Create the KNN classifier
 class = fitcknn(training, group, 'NumNeighbors', kval);
+result = predict(class,sample);
+set(handles.hasilClassify,'string',result);
 
-% Find the nearest neighbors and their indices
-[neighborIndices, ~] = knnsearch(training, sample, 'K', 10);
 
-% Extract top 10 nearest neighbors
-top10Indices = neighborIndices(1:10);
-top10Data = fullData(top10Indices, :);
-
-% Convert the table to a cell array for display in the GUI table
-top10CellData = table2cell(top10Data);
-
-% Display the top 10 data in the table GUI component
-set(handles.hasilData, 'Data', top10CellData);
 
 function hasilClassify_Callback(hObject, eventdata, handles)
 % hObject    handle to hasilClassify (see GCBO)
